@@ -1,0 +1,13 @@
+.homepageBgimage {
+  
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  position: relative;
+  padding-bottom: 150px;
+
+}
+
+body{
+  background: url("rm218batch4-ning-34.jpg");
+}
