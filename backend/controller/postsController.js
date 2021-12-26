@@ -47,7 +47,6 @@ exports.getChunk = async (req, res, next) => {
         })
     try {
         if (req.body.next) {
-            console.log('next')
             pool.query("SELECT userstable.username as userid, postid, content, date, title FROM posts INNER JOIN userstable on posts.userid=userstable.userid  WHERE date<$1 ORDER BY date DESC LIMIT 5", [req.body.date], (sqlerror, result) => {
 
                 if (sqlerror) {
@@ -58,7 +57,7 @@ exports.getChunk = async (req, res, next) => {
 
                         setTimeout(() => {
                             res.status(200).json(result.rows)
-                        }, 1500);
+                        }, 100);
 
 
                     }
@@ -70,8 +69,6 @@ exports.getChunk = async (req, res, next) => {
             })
         }
         else {
-            console.log('prev')
-            console.log(req.body.date)
             pool.query("SELECT * FROM (SELECT userstable.username as userid, postid, content, date, title FROM posts INNER JOIN userstable on posts.userid=userstable.userid WHERE date>$1 ORDER BY date ASC LIMIT 5) as luke ORDER BY date DESC", [req.body.date], (sqlerror, result) => {
 
                 if (sqlerror) {
@@ -82,7 +79,7 @@ exports.getChunk = async (req, res, next) => {
 
                         setTimeout(() => {
                             res.status(200).json(result.rows)
-                        }, 1500);
+                        }, 100);
 
 
                     }
