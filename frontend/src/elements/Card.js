@@ -44,25 +44,18 @@ export function ReactiveCard(props) {
     return (
         <Card sx={{ minWidth: '200px', width: '100%', marginTop: '25px' }}>
             <CardContent>
-                <Typography variant="h5" color="text.secondary" gutterBottom>
+                <Typography variant="h8" color="text.secondary" gutterBottom>
                     {props.title}
                 </Typography>
-                <Typography sx={{ fontSize: 14 }} component="div">
-                    {props.content}
-                </Typography>
-                <Typography sx={{ mb: 1.5 }} color="text.secondary">
+                <Typography sx={{ fontSize: '12px' }} color="text.secondary">
                     {props.author}
                 </Typography>
-                <Typography variant="body2">
+                <Typography sx={{ fontSize: '12px' }} color="text.secondary">
                     {"Posted: " + postDate.toLocaleString()}
                     <br />
 
                 </Typography>
             </CardContent>
-            <CardActions>
-                <Button size="small">👍</Button>
-                <Button size="small">👎</Button>
-            </CardActions>
         </Card>
     );
 }

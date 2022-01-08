@@ -44,7 +44,7 @@ export default function BasicMenu(props) {
                             aria-label="menu"
                             sx={{
                                 mr: 2,
-                                display: props.auth == null ? 'none' : '-webkit-box',
+                                display: props.auth.token == null ? 'none' : '-webkit-box',
 
                             }}
                         >
@@ -53,7 +53,7 @@ export default function BasicMenu(props) {
                         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                             Workplace News
                         </Typography>
-                        <Button color="inherit" component={Link} onClick={props.logout} sx={{ display: props.auth == null ? 'none' : 'unset' }} to='/login'>Logout</Button>
+                        <Button color="inherit" component={Link} onClick={props.logout} sx={{ display: props.auth.token == null ? 'none' : 'unset' }} to='/login'>Logout</Button>
                     </Toolbar>
                 </AppBar>
                 <SwipeableDrawer

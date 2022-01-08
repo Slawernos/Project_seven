@@ -8,8 +8,10 @@ import Register from './pages/Register'
 import * as React from 'react';
 
 function App() {
-  var tempauth = null
+  const navigate = useNavigate();
+  var tempauth = { token: null, username: null }
   try {
+
     tempauth = { token: localStorage.getItem('token'), username: localStorage.getItem('username') }
     if (tempauth.token !== null) {
       var authCheck = new Request('http://localhost:5050/api/auth/pingauth', {
@@ -20,11 +22,11 @@ function App() {
         }
       });
       fetch(authCheck).then((response) => {
-        response.status === 201 ? console.log() : document.location.pathname !== '/login' ? window.location = '/login' : console.log();
+        response.status === 201 ? console.log() : document.location.pathname !== '/login' ? document.location.pathname = '/login' : console.log('Authenticated!');
       })
     }
     else {
-      document.location.pathname !== '/login' ? window.location = '/login' : console.log()
+      document.location.pathname !== '/login' ? document.location.pathname = '/login' : console.log('Authenticated!');
     }
   }
   catch (err) {
@@ -32,27 +34,23 @@ function App() {
     localStorage.clear();
   }
 
-  const navigate = useNavigate();
+
   const [auth, setAuth] = React.useState(tempauth);
-
-  React.useEffect(() => {
-
-
-    if ((auth == null) && document.location.pathname !== '/login') {
-      window.location = '/login';
-    }
-  }, [auth])
 
 
   function login(token, username) {
-    setAuth({ token, username });
-
-    localStorage.setItem('token', token);
-    localStorage.setItem('username', username);
-    navigate('/')
+    if (token != null) {
+      localStorage.setItem('token', token);
+      localStorage.setItem('username', username);
+      setAuth({ token, username });
+      navigate('/dashboard')
+    }
+    else {
+      alert('wrong credentials')
+    }
   }
   function logout() {
-    setAuth(null)
+    setAuth({ token: null, username: null })
     localStorage.clear();
     navigate('/login')
   }

@@ -58,14 +58,10 @@ exports.login = async (req, res, next) => {
                         const token = jwt.sign({
                             user: req.body.username
                         }, process.env.SUPERSECRET, { expiresIn: 60 * 15 });
-                        setTimeout(() => {
-                            res.status(201).json({ userId: req.body.username, token: token })
-                        }, 3000);
+                        res.status(201).json({ userId: req.body.username, token: token })
                     }
                     else {
-                        setTimeout(() => {
-                            res.status(401).json({ error: "Wrong credentials" })
-                        }, 3000);
+                        res.status(401).json({ error: "Wrong credentials" })
 
                     }
                 }).catch((err) => {

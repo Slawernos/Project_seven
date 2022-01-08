@@ -10,7 +10,6 @@ import 'emoji-mart/css/emoji-mart.css'
 import { Picker } from 'emoji-mart'
 import { useRef } from 'react';
 import SentimentSatisfiedIcon from '@mui/icons-material/SentimentSatisfied';
-import { PowerInputSharp } from '@mui/icons-material';
 
 
 const style = {
@@ -31,7 +30,7 @@ export default function AddPost(props) {
         setOpen(props.modalState);
         setEmoji(false);
     }, [props.modalState]);
-    const [textFieldRef, titleFieldRef] = [useRef(), useRef()];
+    const [textFieldRef, titleFieldRef, fileRef] = [useRef(), useRef(), useRef()];
     const [emoji, setEmoji] = React.useState("");
     const [emojiPickerPos, setEmojiPickerPos] = React.useState({ left: 0, top: 0 });
 
@@ -53,25 +52,39 @@ export default function AddPost(props) {
 
 
     function sendPost() {
+
         if ((titleFieldRef.current.value === "") || (textFieldRef.current.value === ""))
             alert('Empty posts not allowed!');
 
         else {
+            try {
+                var formData = new FormData();
+                formData.append('post', JSON.stringify({
+
+                    title: titleFieldRef.current.value,
+                    post: textFieldRef.current.value
+
+
+                }));
+                if (fileRef.current.value) {
+
+                    formData.append("image", fileRef.current.files[0])
+                }
+            }
+
+            catch (err) {
+                console.log(err)
+            }
             props.loading();
             props.modalHandler();
             let postRequest = new Request('http://localhost:5050/api/posts', {
                 method: 'POST',
                 headers: {
-                    'Content-type': 'application/json',
                     'Authorization': props.token.token,
                 },
-                body: JSON.stringify({
-                    post: {
-                        title: titleFieldRef.current.value,
-                        post: textFieldRef.current.value
-                    }
-                })
+                body: formData
             });
+
             fetch(postRequest).then((response) => {
                 console.log(response)
                 response.text().then((answer) => {
@@ -130,9 +143,21 @@ export default function AddPost(props) {
                         </TextField>
 
 
-                        <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                            <Button color='primary' variant='outlined' onClick={sendPost}>Send Post</Button>
-
+                        <Box sx={{
+                            display: 'flex', justifyContent: 'space-between'
+                        }}>
+                            <Button color='primary' variant='outlined' onClick={sendPost} > Send Post</Button>
+                            <input ref={fileRef}
+                                accept="image/*"
+                                style={{ display: 'none' }}
+                                id="raised-button-file"
+                                type="file"
+                            />
+                            <label htmlFor="raised-button-file">
+                                <Button variant="outlined" component="span">
+                                    Upload Image
+                                </Button>
+                            </label>
                             <Button size="small" onClick={showEmojiPicker}><SentimentSatisfiedIcon></SentimentSatisfiedIcon></Button>
                         </Box>
 
@@ -140,7 +165,7 @@ export default function AddPost(props) {
 
                 </Fade>
 
-            </Modal>
+            </Modal >
             <Box>
                 {emoji ? <Picker
                     onSelect={pickEmoji}

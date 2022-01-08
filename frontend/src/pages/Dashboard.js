@@ -78,7 +78,7 @@ function Dashboard(props) {
     }
     const loadPosts = (posts) => {
 
-        if (posts.length != 0) {
+        if (posts.length !== 0) {
             setPostsArray(posts)
         }
 

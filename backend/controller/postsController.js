@@ -19,10 +19,7 @@ exports.getAll = async (req, res, next) => {
         }
         else {
             try {
-
-                setTimeout(() => {
-                    res.status(200).json(result.rows)
-                }, 1500);
+                res.status(200).json(result.rows)
 
 
             }
@@ -107,7 +104,6 @@ exports.getOne = async (req, res, next) => {
 
 // adding new post !
 exports.addPost = async (req, res, next) => {
-
     let user = req.authenticated.user;
     let postDate = Date.now();
     const pool = new Pool(
@@ -119,13 +115,19 @@ exports.addPost = async (req, res, next) => {
             port: 5432
         })
     try {
-        pool.query('INSERT INTO posts(userid,date,content,title) VALUES((SELECT userid FROM userstable WHERE username=$1),$2,$3,$4)', [user, postDate, req.body.post.post, req.body.post.title], (sqlerror, result) => {
+        console.log(req.file)
+        let tempPost = JSON.parse(req.body.post)
+
+        pool.query('INSERT INTO posts(userid,date,content,title) VALUES((SELECT userid FROM userstable WHERE username=$1),$2,$3,$4)', [user, postDate, tempPost.post, tempPost.title], (sqlerror, result) => {
             if (sqlerror) {
                 res.status(500).json({ error: sqlerror })
             } else {
-                setTimeout(() => {
-                    res.status(202).json({ message: 'Success' })
-                }, 3000);
+                if (req.body.file) {
+                    next();
+                }
+                else {
+                    res.status(201).json({ message: 'Success' })
+                }
 
             }
 
@@ -133,7 +135,7 @@ exports.addPost = async (req, res, next) => {
         });
     }
     catch (err) {
-        res.status(500).json({ error: error })
+        res.status(500).json({ error: err.message })
     }
 
 }

@@ -11,6 +11,7 @@ const path = require('path');
 //parse inc request bodies to JSON
 app.use(express.json())
 
+
 app.use((req, res, next) => {
 
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -21,16 +22,19 @@ app.use((req, res, next) => {
 
 //first Route auth routes
 const userRoute = require('./routes/user')
-const postRoute = require('./routes/posts')
 app.use('/api/auth/', userRoute)
+
+
+//second routre for posts
+const postRoute = require('./routes/posts')
 app.use('/api/posts/', postRoute)
 
 
-//second Route for sauces!
-// const saucesRoute = require('./routes/sauces')
-// app.use('/api/sauces',saucesRoute)
 
-// app.use('/images',express.static(path.join(__dirname,'images')));
+
+
+//images handler
+app.use('/images', express.static(path.join(__dirname, 'images')));
 
 
 
