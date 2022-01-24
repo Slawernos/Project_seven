@@ -34,6 +34,10 @@ export function BasicCard() {
 }
 
 export function ReactiveCard(props) {
+
+    function editPost() {
+        props.editPost(props)
+    }
     var postDate;
     try {
         postDate = new Date(parseInt(props.date));
@@ -42,13 +46,13 @@ export function ReactiveCard(props) {
         postDate = new Date();
     }
     return (
-        <Card sx={{ minWidth: '200px', width: '100%', marginTop: '25px' }}>
+        <Card sx={{ minWidth: '200px', width: '100%', marginTop: '25px' }} onClick={editPost}>
             <CardContent>
                 <Typography variant="h8" color="text.secondary" gutterBottom>
                     {props.title}
                 </Typography>
                 <Typography sx={{ fontSize: '12px' }} color="text.secondary">
-                    {props.author}
+                    {"Posted by: " + props.author}
                 </Typography>
                 <Typography sx={{ fontSize: '12px' }} color="text.secondary">
                     {"Posted: " + postDate.toLocaleString()}

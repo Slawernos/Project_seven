@@ -3,13 +3,13 @@ import TextField from '@mui/material/TextField'
 import ThemeComponent from '../theme/Theme';
 import Button from '@mui/material/Button'
 import { useRef } from "react"
-
+var ipAddress = "http://" + window.location.toString().split("://")[1].split(":")[0];
 
 function Register() {
     var [username, password] = [useRef(), useRef()];
     const loginHandler = (event) => {
 
-        var loginRequest = new Request('http://localhost:5050/api/auth/signup', {
+        var loginRequest = new Request(ipAddress + ':5050/api/auth/signup', {
             method: 'POST',
             headers: { 'Content-type': 'application/json' },
             body: JSON.stringify({ username: username.current.value, password: password.current.value })

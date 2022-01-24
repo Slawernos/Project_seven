@@ -9,8 +9,14 @@ import Typography from '@mui/material/Typography';
 import { useRef, useState } from 'react';
 import { SwipeableDrawer } from '@mui/material';
 import { ListItemText, ListItemIcon, IconButton } from '@mui/material/';
-import { AccountBox as AccountBoxIcon, Dashboard as DashboardIcon, Home as HomeIcon, Logout as LogoutIcon, Menu as MenuIcon, Info as InfoIcon } from '@mui/icons-material/';
+import { AccountBox as AccountBoxIcon, Dashboard as DashboardIcon, Home as HomeIcon, Logout as LogoutIcon, Menu as MenuIcon, Info as InfoIcon, Scale } from '@mui/icons-material/';
 
+const logo = require('./icon-left-font.svg').default;
+
+const logoStyle = {
+    height: '80px',
+    transform: 'scale(200%)'
+}
 export default function BasicMenu(props) {
     const [open, setOpen] = useState(false);
     const handleDrawer = (event) => {
@@ -36,7 +42,7 @@ export default function BasicMenu(props) {
 
                 }}>
                 <AppBar position="static">
-                    <Toolbar >
+                    <Toolbar sx={{ justifyContent: 'space-between' }}>
                         <IconButton ref={inputEl} onClick={handleDrawer}
                             size="large"
                             edge="start"
@@ -50,9 +56,7 @@ export default function BasicMenu(props) {
                         >
                             <MenuIcon />
                         </IconButton>
-                        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                            Workplace News
-                        </Typography>
+                        <img style={logoStyle} src={logo}></img>
                         <Button color="inherit" component={Link} onClick={props.logout} sx={{ display: props.auth.token == null ? 'none' : 'unset' }} to='/login'>Logout</Button>
                     </Toolbar>
                 </AppBar>

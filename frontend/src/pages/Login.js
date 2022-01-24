@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 import * as React from 'react';
 import SimpleBackdrop from '../elements/Simplebackdrop';
 
-
+var ipAddress = "http://" + window.location.toString().split("://")[1].split(":")[0];
 
 function Login(props) {
     var [backdropHandler, setBackdropHandler] = React.useState(false);
@@ -23,7 +23,7 @@ function Login(props) {
     var [username, password] = [useRef(), useRef()];
     const loginHandler = (event) => {
         handleBackdrop();
-        var loginRequest = new Request('http://localhost:5050/api/auth/login', {
+        var loginRequest = new Request(ipAddress + ':5050/api/auth/login', {
             method: 'POST',
             headers: { 'Content-type': 'application/json' },
             body: JSON.stringify({ username: username.current.value, password: password.current.value })

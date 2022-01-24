@@ -2,6 +2,7 @@ import { ReactiveCard } from './Card';
 import React from 'react';
 
 function PostsList(props) {
+
     try {
         if (props.posts !== null) {
 
@@ -10,12 +11,12 @@ function PostsList(props) {
 
 
                     <ReactiveCard
-
+                        editPost={props.editPost}
                         title={singlePost.title}
-                        content={singlePost.content}
-                        author={"Posted by: " + singlePost.userid}
+                        author={singlePost.userid}
                         date={singlePost.date}
                         key={singlePost.postid}
+                        id={singlePost.postid}
                     />
 
 
