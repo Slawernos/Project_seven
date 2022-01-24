@@ -6,7 +6,7 @@ import Layout from './layout/Layout';
 import Dashboard from './pages/Dashboard';
 import Register from './pages/Register'
 import * as React from 'react';
-
+var ipAddress = "http://" + window.location.toString().split("://")[1].split(":")[0];
 function App() {
   const navigate = useNavigate();
   var tempauth = { token: null, username: null }
@@ -14,7 +14,7 @@ function App() {
 
     tempauth = { token: localStorage.getItem('token'), username: localStorage.getItem('username') }
     if (tempauth.token !== null) {
-      var authCheck = new Request('http://localhost:5050/api/auth/pingauth', {
+      var authCheck = new Request(ipAddress + ':5050/api/auth/pingauth', {
         method: 'GET',
         headers: {
           'Content-type': 'application/json',
@@ -30,7 +30,6 @@ function App() {
     }
   }
   catch (err) {
-    console.log(err)
     localStorage.clear();
   }
 
@@ -57,7 +56,7 @@ function App() {
   return (
     <Layout logout={logout} auth={auth}>
       <Routes>
-        <Route path='/' element={<Home auth={auth} />} exact>
+        <Route path='/' element={<Login login={login} auth={auth} />} exact>
 
         </Route>
         <Route path='/login' element={<Login login={login} auth={auth} />} exact>

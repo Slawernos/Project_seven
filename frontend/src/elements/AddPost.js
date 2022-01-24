@@ -6,17 +6,17 @@ import Fade from '@mui/material/Fade';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import { Button } from '@mui/material';
-import 'emoji-mart/css/emoji-mart.css'
-import { Picker } from 'emoji-mart'
 import { useRef } from 'react';
-import SentimentSatisfiedIcon from '@mui/icons-material/SentimentSatisfied';
-
+import { Paper } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
+import ThemeComponent from '../theme/Theme';
+var ipAddress = "http://" + window.location.toString().split("://")[1].split(":")[0];
 
 const style = {
     position: 'absolute',
     top: '10%',
     left: '50%',
-    transform: 'translate(-50%, -20%)',
+    transform: 'translate(-50%)',
     width: '80%',
     bgcolor: 'background.paper',
     border: '2px solid #000',
@@ -30,7 +30,7 @@ export default function AddPost(props) {
         setOpen(props.modalState);
         setEmoji(false);
     }, [props.modalState]);
-    const [textFieldRef, titleFieldRef, fileRef] = [useRef(), useRef(), useRef()];
+    const [textFieldRef, titleFieldRef, fileRef, imageRef] = [useRef(), useRef(), useRef(), useRef()];
     const [emoji, setEmoji] = React.useState("");
     const [emojiPickerPos, setEmojiPickerPos] = React.useState({ left: 0, top: 0 });
 
@@ -77,7 +77,7 @@ export default function AddPost(props) {
             }
             props.loading();
             props.modalHandler();
-            let postRequest = new Request('http://localhost:5050/api/posts', {
+            let postRequest = new Request(ipAddress + ':5050/api/posts', {
                 method: 'POST',
                 headers: {
                     'Authorization': props.token.token,
@@ -86,11 +86,7 @@ export default function AddPost(props) {
             });
 
             fetch(postRequest).then((response) => {
-                console.log(response)
                 response.text().then((answer) => {
-
-                    console.log(answer)
-
                     props.endLoading();
                     props.updateList();
                 })
@@ -98,82 +94,110 @@ export default function AddPost(props) {
             });
         }
     }
+    const imageUpdater = (elem) => {
+        elem.target.addEventListener('change', (src) => {
+            imageRef.current.src = fileRef.current.value;
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                imageRef.current.src = e.target.result;
+                imageRef.current.parentNode.style.visibility = 'visible';
+                imageRef.current.parentNode.style.height = '200px'
+            }
+            reader.readAsDataURL(fileRef.current.files[0]);
+        })
+    }
+
     return (
         <div>
             {/* disableBackdropClick disableEscapeKeyDown */}
-            <Modal
-                aria-labelledby="transition-modal-title"
-                aria-describedby="transition-modal-description"
-                open={open}
-                disableScrollLock={true}
-                onClose={props.modalHandler}
-                closeAfterTransition
-                BackdropComponent={Backdrop}
-                BackdropProps={{
-                    timeout: 500,
-                    onClick: props.modalHandler
-                }}
-            >
-                <Fade in={open}>
-                    <Box sx={style} onClick={closeEmojiPicker}>
-                        <Typography variant="h6">Enter your Post here!</Typography>
-                        <Typography variant="h6" sx={{ marginTop: '15px' }}>Title of your post:</Typography>
-                        <TextField
-                            id="outlined-multiline-flexible"
+            <ThemeComponent>
+                <Modal
+                    aria-labelledby="transition-modal-title"
+                    aria-describedby="transition-modal-description"
+                    open={open}
+                    disableScrollLock={true}
+                    onClose={props.modalHandler}
+                    closeAfterTransition
+                    BackdropComponent={Backdrop}
+                    BackdropProps={{
+                        timeout: 500,
+                        onClick: props.modalHandler
+                    }}
+                >
+                    <Fade in={open}>
+                        <Box sx={style}>
+                            <Button variant='outlined' onClick={props.modalHandler}
+                                sx={{
+                                    'position': 'absolute',
+                                    'right': '15px'
+                                }}>
+                                <CloseIcon
 
-                            multiline
-                            maxRows={1}
-                            placeholder='Enter you post here!'
-                            sx={{ width: '100%' }}
-                            inputRef={titleFieldRef}
-                        />
+                                />
+                            </Button>
+                            <Typography variant="h6">Add new Post</Typography>
 
-                        <TextField
-                            id="outlined-multiline-flexible"
+                            <Typography variant="h6" sx={{ marginTop: '15px' }}>Title of your post:</Typography>
+                            <TextField
+                                id="outlined-multiline-flexible"
 
-                            multiline
-                            rows={4}
-                            placeholder='Enter you post here!'
-                            sx={{ width: '100%', margin: '30px 0 30px 0' }}
-                            inputRef={textFieldRef}
-                        >
-
-
-
-                        </TextField>
-
-
-                        <Box sx={{
-                            display: 'flex', justifyContent: 'space-between'
-                        }}>
-                            <Button color='primary' variant='outlined' onClick={sendPost} > Send Post</Button>
-                            <input ref={fileRef}
-                                accept="image/*"
-                                style={{ display: 'none' }}
-                                id="raised-button-file"
-                                type="file"
+                                multiline
+                                maxRows={1}
+                                placeholder='Enter you post here!'
+                                sx={{ width: '100%' }}
+                                inputRef={titleFieldRef}
                             />
-                            <label htmlFor="raised-button-file">
-                                <Button variant="outlined" component="span">
-                                    Upload Image
-                                </Button>
-                            </label>
-                            <Button size="small" onClick={showEmojiPicker}><SentimentSatisfiedIcon></SentimentSatisfiedIcon></Button>
+
+                            <TextField
+                                id="outlined-multiline-flexible"
+
+                                multiline
+                                rows={4}
+                                placeholder='Enter you post here!'
+                                sx={{ width: '100%', margin: '30px 0 30px 0' }}
+                                inputRef={textFieldRef}
+                            >
+
+
+
+                            </TextField>
+
+
+                            <Box sx={{
+                                display: 'flex', justifyContent: 'space-between'
+                            }}>
+                                <Button color='secondary' variant='outlined' onClick={sendPost} > Send Post</Button>
+                                <input ref={fileRef}
+                                    onClick={imageUpdater}
+                                    accept="image/*"
+                                    style={{ display: 'none' }}
+                                    id="raised-button-file"
+                                    type="file"
+                                />
+                                <label htmlFor="raised-button-file">
+                                    <Button variant="outlined" color='secondary' component="span">
+                                        Upload Image
+                                    </Button>
+                                </label>
+
+                            </Box>
+                            <Paper
+                                variant="outlined"
+                                sx={{ display: "flex", justifyContent: "center", marginTop: "25px", maxHeight: '200px', visibility: 'hidden' }}
+                            >
+                                <img className='img' ref={imageRef} />
+                            </Paper>
                         </Box>
 
-                    </Box>
+                    </Fade>
 
-                </Fade>
-
-            </Modal >
-            <Box>
-                {emoji ? <Picker
-                    onSelect={pickEmoji}
-                    perLine='6'
-                    native='true'
-                    style={{ position: 'fixed', zIndex: '9999', width: '80%', maxWidth: '300px', left: emojiPickerPos.left, top: emojiPickerPos.top }}
-                /> : ''}
-            </Box>
+                </Modal >
+            </ThemeComponent>
         </div >
     );
+
+
+
+
 }

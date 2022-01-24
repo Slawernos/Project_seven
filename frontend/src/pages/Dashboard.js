@@ -7,16 +7,56 @@ import { Button, Fab } from '@mui/material';
 import AddPost from '../elements/AddPost';
 import { useRef } from 'react';
 import { Box } from '@mui/system';
+import ViewEditPost from '../elements/ViewEditPost';
+import ThemeComponent from '../theme/Theme';
 
+var ipAddress = "http://" + window.location.toString().split("://")[1].split(":")[0];
 function Dashboard(props) {
 
     var [backdropHandler, setBackdropHandler] = React.useState(false);
     var [postsArray, setPostsArray] = React.useState(null);
     var [addPostModal, setAddPostModal] = React.useState(false);
+    var [editPostModal, seteditPostModal] = React.useState(false);
+    var [isEditPost, setisEditPost] = React.useState(false);
+    const [postData, setPostData] = React.useState({ "content": "", "date": "", "title": "", "img": "" })
     const lastPostRef = useRef();
+
+
+    const loadEditPost = (post) => {
+        setPostData(post);
+    }
+    const getPost = (post) => {
+
+        handleBackdrop();
+        let getUrl = new URL(ipAddress + ':5050/api/posts/getone');
+        getUrl.searchParams.append('id', post.id);
+        let postRequest = new Request(getUrl, {
+            method: 'GET',
+            headers: {
+                'Authorization': props.auth.token,
+            }
+
+
+        });
+
+        fetch(postRequest).then((response) => {
+            if (response.status == 401)
+                window.location = '/'
+            else {
+                response.text().then((answer) => {
+                    setPostData(JSON.parse(answer)[0])
+
+                })
+            }
+
+        });
+        closeBackdrop();
+
+    }
+
     const nextPage = () => {
         handleBackdrop();
-        var loginRequest = new Request('http://localhost:5050/api/posts/getChunk', {
+        var loginRequest = new Request(ipAddress + ':5050/api/posts/getChunk', {
             method: 'POST',
             headers: {
                 'Content-type': 'application/json',
@@ -30,19 +70,27 @@ function Dashboard(props) {
 
 
         fetch(loginRequest).then((response) => {
-            response.text().then((posts) => {
-                var tempArray = JSON.parse(posts)
-                loadPosts(tempArray)
-                console.log(tempArray);
+            if (response.status == 401)
+                window.location = '/'
+            else {
+                response.text().then((posts) => {
+                    var tempArray = JSON.parse(posts)
+                    loadPosts(tempArray)
 
-            })
+
+                })
+            }
             closeBackdrop();
         })
     }
-
+    const postEditor = (post) => {
+        setPostData({ "content": "", "date": "", "title": "", "img": "" });
+        getPost(post);
+        setisEditPost(post);
+    }
     const prevPage = () => {
         handleBackdrop();
-        var loginRequest = new Request('http://localhost:5050/api/posts/getChunk', {
+        var loginRequest = new Request(ipAddress + ':5050/api/posts/getChunk', {
             method: 'POST',
             headers: {
                 'Content-type': 'application/json',
@@ -56,12 +104,18 @@ function Dashboard(props) {
 
 
         fetch(loginRequest).then((response) => {
-            response.text().then((posts) => {
-                var tempArray = JSON.parse(posts)
-                loadPosts(tempArray)
-                console.log(tempArray);
+            if (response.status == 401)
+                window.location = '/'
+            else {
+                response.text().then((posts) => {
 
-            })
+                    var tempArray = JSON.parse(posts)
+                    loadPosts(tempArray)
+
+
+
+                })
+            }
             closeBackdrop();
         })
     }
@@ -74,8 +128,23 @@ function Dashboard(props) {
         else
             setAddPostModal(true);
 
+    }
+    const editPostHandler = (post) => {
+
+
+        if (editPostModal)
+            seteditPostModal(false);
+        else {
+
+            postEditor(post);
+            seteditPostModal(true);
+
+        }
 
     }
+
+
+
     const loadPosts = (posts) => {
 
         if (posts.length !== 0) {
@@ -96,7 +165,7 @@ function Dashboard(props) {
     }
     const getPosts = (token) => {
         handleBackdrop();
-        var loginRequest = new Request('http://localhost:5050/api/posts/getall', {
+        var loginRequest = new Request(ipAddress + ':5050/api/posts/getall', {
             method: 'GET',
             headers: {
                 'Content-type': 'application/json',
@@ -106,40 +175,47 @@ function Dashboard(props) {
 
 
         fetch(loginRequest).then((response) => {
-            response.text().then((posts) => {
-                var tempArray = JSON.parse(posts)
-                loadPosts(tempArray)
+            if (response.status == 401)
+                window.location = '/'
+            else {
+                response.text().then((posts) => {
+                    var tempArray = JSON.parse(posts)
+                    loadPosts(tempArray)
 
-            })
+                })
+            }
             closeBackdrop();
         })
     }
     React.useEffect(() => {
         getPosts(props.auth);
 
-    }, [newPost])
+    }, [newPost]);
+
     return (
+        <ThemeComponent>
+            <Container sx={{ padding: '25px', position: 'relative' }} >
+                <Fab onClick={modalHandler} backgroundcolor="primary" aria-label="Add new post" sx={{
+                    position: 'absolute',
+                    right: '30px',
+                    top: '20px'
+                }} >
 
-        <Container sx={{ padding: '25px', position: 'relative' }} >
-            <Fab onClick={modalHandler} color="primary" aria-label="Add new post" sx={{
-                position: 'absolute',
-                right: '30px',
-                top: '20px'
-            }} >
+                    <AddIcon />
+                </Fab>
+                <AddPost updateList={updateList} endLoading={closeBackdrop} loading={handleBackdrop} token={props.auth} modalHandler={modalHandler} modalState={addPostModal} />
+                <ViewEditPost postData={postData} editPost={isEditPost} updateList={updateList} endLoading={closeBackdrop} loading={handleBackdrop} token={props.auth} modalHandler={editPostHandler} modalState={editPostModal} />
+                <SimpleBackdrop backdropHandler={backdropHandler} />
 
-                <AddIcon />
-            </Fab>
-            <AddPost updateList={updateList} endLoading={closeBackdrop} loading={handleBackdrop} token={props.auth} modalHandler={modalHandler} modalState={addPostModal} />
-            <SimpleBackdrop backdropHandler={backdropHandler} />
+                <h3>All posts:</h3>
+                <PostsList posts={postsArray} editPost={editPostHandler} />
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', marginTop: '25px' }}>
+                    <Button ref={lastPostRef} color='secondary' onClick={prevPage}>Load Previous Posts</Button>
+                    <Button ref={lastPostRef} color='secondary' onClick={nextPage}>Load Next Posts</Button>
+                </Box>
 
-            <h3>All posts:</h3>
-            <PostsList posts={postsArray} />
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', marginTop: '25px' }}>
-                <Button ref={lastPostRef} onClick={prevPage}>Load Previous Posts</Button>
-                <Button ref={lastPostRef} onClick={nextPage}>Load Next Posts</Button>
-            </Box>
-
-        </Container>
+            </Container>
+        </ThemeComponent>
     )
 
 
