@@ -1,6 +1,7 @@
 const { Pool, Client } = require('pg')
 require('dotenv').config()
 var fs = require('fs');
+const { resourceLimits } = require('worker_threads');
 
 
 //getting top 5 posts
@@ -14,7 +15,7 @@ exports.getAll = async (req, res, next) => {
             host: 'localhost',
             port: 5432
         })
-    pool.query("SELECT userstable.username as userid, postid, content, date, title FROM posts INNER JOIN userstable on posts.userid=userstable.userid ORDER BY date DESC LIMIT 5", (sqlerror, result) => {
+    pool.query("SELECT userstable.username as userid,userstable.userid as id, posts.postid, content, date, title,isread FROM posts INNER JOIN userstable on posts.userid=userstable.userid LEFT JOIN (SELECT isread,postid FROM isreadtable  WHERE userid=$1) as ala  on ala.postid=posts.postid ORDER BY date DESC LIMIT 5", [req.authenticated.userid], (sqlerror, result) => {
 
         if (sqlerror) {
             res.status(500).json({ error: sqlerror })
@@ -23,8 +24,8 @@ exports.getAll = async (req, res, next) => {
             try {
                 res.status(200).json(result.rows)
 
-
             }
+
             catch (err) {
                 res.status(500).json({ error: err.message })
             }
@@ -35,7 +36,6 @@ exports.getAll = async (req, res, next) => {
 }
 
 exports.getChunk = async (req, res, next) => {
-
     const pool = new Pool(
         {
             user: process.env.DATABASE_USERNAME,
@@ -45,20 +45,21 @@ exports.getChunk = async (req, res, next) => {
             port: 5432
         })
     try {
-        if (req.body.next) {
-            pool.query("SELECT userstable.username as userid, postid, content, date, title FROM posts INNER JOIN userstable on posts.userid=userstable.userid  WHERE date<$1 ORDER BY date DESC LIMIT 5", [req.body.date], (sqlerror, result) => {
+        if (req.query.next == "true") {
+            pool.query("SELECT userstable.username as userid,userstable.userid as id, posts.postid, content, date, title,isread FROM posts INNER JOIN userstable on posts.userid=userstable.userid LEFT JOIN (SELECT isread,postid FROM isreadtable  WHERE userid=$2) as ala  on ala.postid=posts.postid WHERE date<$1 ORDER BY date DESC LIMIT 5", [req.query.id, req.authenticated.userid], (sqlerror, result) => {
 
                 if (sqlerror) {
+
                     res.status(500).json({ error: sqlerror })
                 }
                 else {
                     try {
-                        setTimeout(() => {
-                            res.status(200).json(result.rows)
-                        }, 100);
 
+                        res.status(200).json(result.rows)
 
                     }
+
+
                     catch (err) {
                         res.status(500).json({ error: err.message })
                     }
@@ -67,20 +68,17 @@ exports.getChunk = async (req, res, next) => {
             })
         }
         else {
-            pool.query("SELECT * FROM (SELECT userstable.username as userid, postid, content, date, title FROM posts INNER JOIN userstable on posts.userid=userstable.userid WHERE date>$1 ORDER BY date ASC LIMIT 5) as luke ORDER BY date DESC", [req.body.date], (sqlerror, result) => {
-
+            pool.query("SELECT userstable.username as userid,userstable.userid as id, posts.postid, content, date, title,isread FROM posts INNER JOIN userstable on posts.userid=userstable.userid LEFT JOIN (SELECT isread,postid FROM isreadtable  WHERE userid=$2) as ala  on ala.postid=posts.postid WHERE date>$1 ORDER BY date DESC LIMIT 5", [req.query.id, req.authenticated.userid], (sqlerror, result) => {
                 if (sqlerror) {
                     res.status(500).json({ error: sqlerror })
                 }
                 else {
                     try {
-
-                        setTimeout(() => {
-                            res.status(200).json(result.rows)
-                        }, 100);
-
+                        res.status(200).json(result.rows)
 
                     }
+
+
                     catch (err) {
                         res.status(500).json({ error: err.message })
                     }
@@ -109,7 +107,7 @@ exports.getOne = async (req, res, next) => {
             port: 5432
         })
     try {
-        pool.query("SELECT userstable.username as userid, postid, content, date, title, img FROM posts INNER JOIN userstable on posts.userid=userstable.userid WHERE postid=$1", [req.query.id], (sqlerror, result) => {
+        pool.query("SELECT userstable.username as userid, posts.postid, content, date, title,isread,isreadtable.userid as readby, img FROM posts INNER JOIN userstable on posts.userid=userstable.userid LEFT JOIN isreadtable on isreadtable.postid=posts.postid WHERE posts.postid=$1", [req.query.id], (sqlerror, result) => {
 
             if (sqlerror) {
                 res.status(500).json({ error: sqlerror })
@@ -123,7 +121,26 @@ exports.getOne = async (req, res, next) => {
 
 
                     }
-                    res.status(200).json(result.rows)
+                    let isread = false;
+                    result.rows.forEach(item => {
+                        if (req.authenticated.userid == item.readby) {
+                            isread = true;
+
+                        }
+                    })
+                    if (!isread) {
+                        pool.query("INSERT into isreadtable(userid,postid,isread) VALUES($1,$2,$3) ", [req.authenticated.userid, req.query.id, true], (secondsqlerror, secondresult) => {
+                            if (secondsqlerror) {
+                                res.status(500).json({ error: secondsqlerror })
+                            }
+                            else {
+
+                            }
+                        })
+                    };
+                    res.status(200).json(result.rows[0])
+
+
                 }
                 catch (err) {
                     res.status(500).json({ error: err.message })

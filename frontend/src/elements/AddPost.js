@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState, useContext } from 'react';
 import Backdrop from '@mui/material/Backdrop';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
@@ -10,6 +10,7 @@ import { useRef } from 'react';
 import { Paper } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import ThemeComponent from '../theme/Theme';
+import { UpdatedContext } from './PostsContext';
 var ipAddress = "http://" + window.location.toString().split("://")[1].split(":")[0];
 
 const style = {
@@ -25,31 +26,12 @@ const style = {
 };
 
 export default function AddPost(props) {
-    const [open, setOpen] = React.useState(props.modalState);
+    const [open, setOpen] = useState(props.modalState);
+    const [isUpdated, setIsUpdated] = useContext(UpdatedContext);
     React.useEffect(() => {
         setOpen(props.modalState);
-        setEmoji(false);
     }, [props.modalState]);
     const [textFieldRef, titleFieldRef, fileRef, imageRef] = [useRef(), useRef(), useRef(), useRef()];
-    const [emoji, setEmoji] = React.useState("");
-    const [emojiPickerPos, setEmojiPickerPos] = React.useState({ left: 0, top: 0 });
-
-    function showEmojiPicker(event) {
-        setEmoji(true);
-        setEmojiPickerPos({ left: (event.pageX - window.screen.width * 0.15), top: (event.pageY - 200) });
-
-    }
-    function closeEmojiPicker(event) {
-        if (emoji)
-            setEmoji(false);
-
-    }
-
-    function pickEmoji(picked) {
-        textFieldRef.current.value += picked.native;
-    }
-
-
 
     function sendPost() {
 
@@ -75,8 +57,6 @@ export default function AddPost(props) {
             catch (err) {
                 console.log(err)
             }
-            props.loading();
-            props.modalHandler();
             let postRequest = new Request(ipAddress + ':5050/api/posts', {
                 method: 'POST',
                 headers: {
@@ -87,8 +67,9 @@ export default function AddPost(props) {
 
             fetch(postRequest).then((response) => {
                 response.text().then((answer) => {
-                    props.endLoading();
-                    props.updateList();
+                    setIsUpdated(isUpdated + 1);
+                    props.modalHandler()
+
                 })
 
             });

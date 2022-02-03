@@ -4,6 +4,7 @@ import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
+import { typography } from '@mui/system';
 
 
 export function BasicCard() {
@@ -37,6 +38,7 @@ export function ReactiveCard(props) {
 
     function editPost() {
         props.editPost(props)
+
     }
     var postDate;
     try {
@@ -59,6 +61,7 @@ export function ReactiveCard(props) {
                     <br />
 
                 </Typography>
+                {props.isread ? <Typography color='primary'>Seen</Typography> : <Typography sx={{ color: 'red' }}>New!</Typography>}
             </CardContent>
         </Card>
     );

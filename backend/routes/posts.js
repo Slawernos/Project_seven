@@ -4,10 +4,10 @@ const postsController = require('../controller/postsController')
 const auth = require('../middleware/auth')
 const multer = require('../middleware/multer')
 
-router.get('/getall', auth.auth, postsController.getAll);
+router.get('/', auth.auth, postsController.getAll);
+router.get('/getchunk', auth.auth, postsController.getChunk);
 router.get('/getone', auth.auth, postsController.getOne);
-router.delete('/', auth.auth, postsController.deletePost)
-router.post('/getchunk', auth.auth, postsController.getChunk);
+router.delete('/', auth.auth, postsController.deletePost);
 router.put('/', auth.auth, multer, postsController.updatePost)
 router.post('/', auth.auth, multer, postsController.addPost,);
 

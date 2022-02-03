@@ -46,7 +46,7 @@ exports.login = async (req, res, next) => {
             port: 5432
         })
 
-    pool.query('SELECT username,passhash,shortdesc FROM userstable WHERE username=$1', [req.body.username], (sqlerror, result) => {
+    pool.query('SELECT username,passhash,shortdesc,userid FROM userstable WHERE username=$1', [req.body.username], (sqlerror, result) => {
 
         if (sqlerror) {
             res.status(500).json({ error: sqlerror })
@@ -56,7 +56,8 @@ exports.login = async (req, res, next) => {
                 bcrypt.compare(req.body.password, result.rows[0].passhash).then((loggedIn) => {
                     if (loggedIn) {
                         const token = jwt.sign({
-                            user: req.body.username
+                            user: req.body.username,
+                            userid: result.rows[0].userid,
                         }, process.env.SUPERSECRET, { expiresIn: 60 * 15 });
                         res.status(201).json({ userId: req.body.username, token: token })
                     }
@@ -75,4 +76,24 @@ exports.login = async (req, res, next) => {
 
     })
 
+}
+
+
+exports.deleteUser = (req, res, next) => {
+    const pool = new Pool(
+        {
+            user: process.env.DATABASE_USERNAME,
+            password: process.env.DATABASE_PASSWORD,
+            database: process.env.DATABASE_DATABASE,
+            host: 'localhost',
+            port: 5432
+        })
+    pool.query('DELETE FROM userstable WHERE userid=$1', [req.authenticated.userid], (sqlerror, result) => {
+        if (sqlerror) {
+            res.status(500).json({ message: sqlerror })
+        }
+        else {
+            res.status(204).json({ message: "User deleted!" });
+        }
+    });
 }

@@ -66,7 +66,7 @@ export default function BasicMenu(props) {
                     onClose={() => setOpen(false)}
                     onOpen={() => { }}
                 >
-                    <Button color="inherit" component={Link} to='/' onClick={closeDrawer}>
+                    <Button color="inherit" component={Link} to='/home' onClick={closeDrawer}>
                         <ListItem>
                             <ListItemIcon>
                                 <HomeIcon />
@@ -99,7 +99,7 @@ export default function BasicMenu(props) {
                             <ListItemText>About</ListItemText>
                         </ListItem>
                     </Button>
-                    <Button color="inherit" component={Link} to='/logout' onClick={props.logout}>
+                    <Button color="inherit" component={Link} to='/login' onClick={props.logout}>
                         <ListItem>
                             <ListItemIcon>
                                 <LogoutIcon />

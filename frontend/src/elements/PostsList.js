@@ -1,28 +1,35 @@
 import { ReactiveCard } from './Card';
-import React from 'react';
+import React, { useContext } from 'react';
+import { PostsContext } from '../elements/PostsContext';
 
 function PostsList(props) {
-
+    const [posts, setPosts] = useContext(PostsContext);
     try {
-        if (props.posts !== null) {
+        if (posts !== null) {
 
-            return (
-                props.posts.map(singlePost =>
-
-
-                    <ReactiveCard
-                        editPost={props.editPost}
-                        title={singlePost.title}
-                        author={singlePost.userid}
-                        date={singlePost.date}
-                        key={singlePost.postid}
-                        id={singlePost.postid}
-                    />
-
-
+            if (posts.length > 0) {
+                return (
+                    posts.map(singlePost =>
+                        <ReactiveCard
+                            editPost={props.editPost}
+                            title={singlePost.title}
+                            author={singlePost.userid}
+                            date={singlePost.date}
+                            key={singlePost.postid}
+                            id={singlePost.postid}
+                            isread={singlePost.isread}
+                        />
+                    )
                 )
+            }
+            else {
+                return (
+                    <div>Noposts to present</div>
+                )
+            }
 
-            )
+
+
         }
 
         else
