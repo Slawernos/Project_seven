@@ -7,9 +7,12 @@ import Dashboard from './pages/DashboardNew';
 import Register from './pages/Register'
 import * as React from 'react';
 import ProfilePage from './pages/Profile';
+<<<<<<< Updated upstream
 import About from './pages/About';
 
 var ipAddress = "http://" + window.location.toString().split("://")[1].split(":")[0];
+=======
+>>>>>>> Stashed changes
 function App() {
   const navigate = useNavigate();
   var tempauth = { token: null, username: null }

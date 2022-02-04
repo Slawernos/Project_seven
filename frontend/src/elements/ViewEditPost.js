@@ -48,7 +48,7 @@ export default function ViewEditPost(props) {
         });
         fetch(postRequest).then((response) => {
             response.text().then((answer) => {
-                if (answer.status == 401)
+                if (answer.status === 401)
                     window.location = '/'
                 else {
                     setIsUpdated(isUpdated + 1);
@@ -111,7 +111,7 @@ export default function ViewEditPost(props) {
             });
 
             fetch(postRequest).then((response) => {
-                if (response.status == 401)
+                if (response.status === 401)
                     window.location = '/'
                 else {
                     response.text().then((answer) => {
@@ -137,7 +137,7 @@ export default function ViewEditPost(props) {
             });
 
             fetch(postRequest).then((response) => {
-                if (response.status == 401)
+                if (response.status === 401)
                     window.location = '/'
                 else {
                     response.text().then((answer) => {
@@ -224,13 +224,13 @@ export default function ViewEditPost(props) {
                                     variant="outlined"
                                     sx={{ display: "flex", justifyContent: "center", marginTop: "25px", maxHeight: '200px', visibility: 'hidden' }}
                                 >
-                                    <img className='img' ref={disabledImageRef} src={editPost.img} />
+                                    <img className='img' ref={disabledImageRef} src={editPost.img} alt="Posted image" />
                                 </Paper> :
                                 <Paper
                                     variant="outlined"
                                     sx={{ display: "flex", justifyContent: "center", marginTop: "25px", height: '200px' }}
                                 >
-                                    <img className='img' ref={imageRef} src={editPost.img} />
+                                    <img className='img' ref={imageRef} src={editPost.img} alt="Posted image" />
                                 </Paper>
                             }
                         </Box>
@@ -292,13 +292,13 @@ export default function ViewEditPost(props) {
                                     variant="outlined"
                                     sx={{ display: "flex", justifyContent: "center", marginTop: "25px", maxHeight: '200px', visibility: 'hidden' }}
                                 >
-                                    <img className='img' ref={disabledImageRef} src={editPost.img} />
+                                    <img className='img' ref={disabledImageRef} src={editPost.img} alt="Posted image" />
                                 </Paper> :
                                 <Paper
                                     variant="outlined"
                                     sx={{ display: "flex", justifyContent: "center", marginTop: "25px", height: '200px' }}
                                 >
-                                    <img className='img' ref={imageRef} src={editPost.img} />
+                                    <img className='img' ref={imageRef} src={editPost.img} alt="Posted image" />
                                 </Paper>
                             }
                         </Box>

@@ -167,7 +167,7 @@ export default function AddPost(props) {
                                 variant="outlined"
                                 sx={{ display: "flex", justifyContent: "center", marginTop: "25px", maxHeight: '200px', visibility: 'hidden' }}
                             >
-                                <img className='img' ref={imageRef} />
+                                <img className='img' ref={imageRef} alt="Posted image" />
                             </Paper>
                         </Box>
 

@@ -1,6 +1,6 @@
 import { useContext } from "react"
 import { PostsContext } from "./PostsContext"
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import { PostCall } from "./FetchCalls";
 
 export default function ButtonPair(props) {

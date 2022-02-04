@@ -74,7 +74,6 @@ function Login(props) {
                     }}>
                         <Button variant="contained" sx={{ color: "primary", margin: '15px' }} onClick={loginHandler}>Login</Button>
                         <Button variant="contained" sx={{ color: "primary", margin: '15px' }} component={Link} to='/register'>Register</Button>
-                        <Button variant="contained" sx={{ color: "primary", margin: '15px' }} color="primary">Forgotten pasword</Button>
                     </Container>
                 </form>
 

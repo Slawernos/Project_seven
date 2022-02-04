@@ -1,4 +1,4 @@
-import React from "react";
+
 
 
 export async function PostCall(token, isNext, posts) {
@@ -6,12 +6,12 @@ export async function PostCall(token, isNext, posts) {
     let ipAddress = "http://" + window.location.toString().split("://")[1].split(":")[0];
     var getUrl = new URL(ipAddress + ':5050/api/posts/');
     try {
-        if (posts !== undefined) {
+        if (posts != undefined) {
             getUrl.href += "getchunk"
 
             if (isNext) {
                 console.log(posts)
-                if (posts.length == 5) {
+                if (posts.length === 5) {
                     getUrl.searchParams.append('next', true);
                     getUrl.searchParams.append('id', posts[posts.length - 1].date);
                 }
@@ -46,7 +46,7 @@ export async function PostCall(token, isNext, posts) {
     catch (err) {
         return Promise.reject("Error with request try to login again!")
     }
-    if (data.length == 0 && posts !== undefined)
+    if (data.length === 0 && posts !== undefined)
         return Promise.reject('Earliest Post')
     if (result.status === 401)
         return Promise.reject('Unauthorized')

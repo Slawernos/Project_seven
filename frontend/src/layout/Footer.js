@@ -27,7 +27,7 @@ function FooterComponent() {
 
             }}>
 
-                <img src={footerLogo} style={logoStyle}></img>
+                <img src={footerLogo} style={logoStyle} alt="Groupomania"></img>
                 <Typography
                     sx={{ display: 'inline' }}
                 >All rights reserved.</Typography>

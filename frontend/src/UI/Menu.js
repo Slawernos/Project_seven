@@ -5,11 +5,10 @@ import { Link } from 'react-router-dom';
 import ThemeComponent from '../theme/Theme'
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
 import { useRef, useState } from 'react';
 import { SwipeableDrawer } from '@mui/material';
 import { ListItemText, ListItemIcon, IconButton } from '@mui/material/';
-import { AccountBox as AccountBoxIcon, Dashboard as DashboardIcon, Home as HomeIcon, Logout as LogoutIcon, Menu as MenuIcon, Info as InfoIcon, Scale } from '@mui/icons-material/';
+import { AccountBox as AccountBoxIcon, Dashboard as DashboardIcon, Home as HomeIcon, Logout as LogoutIcon, Menu as MenuIcon, Info as InfoIcon } from '@mui/icons-material/';
 
 const logo = require('./icon-left-font.svg').default;
 
