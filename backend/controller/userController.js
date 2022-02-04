@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { Pool, Client } = require('pg')
+var fs = require('fs');
 require('dotenv').config()
 
 exports.signUp = async (req, res, next) => {
@@ -88,12 +89,24 @@ exports.deleteUser = (req, res, next) => {
             host: 'localhost',
             port: 5432
         })
-    pool.query('DELETE FROM userstable WHERE userid=$1', [req.authenticated.userid], (sqlerror, result) => {
+    pool.query('SELECT img FROM posts WHERE userid=$1', [req.authenticated.userid], (sqlerror, result)=>{
         if (sqlerror) {
             res.status(500).json({ message: sqlerror })
         }
         else {
-            res.status(204).json({ message: "User deleted!" });
+        result.rows.forEach(item =>{
+            if (item.img!="")
+             fs.unlinkSync('./images/' + item.img)
+        })
+        pool.query('DELETE FROM userstable WHERE userid=$1', [req.authenticated.userid], (sqlerror, result) => {
+            if (sqlerror) {
+                res.status(500).json({ message: sqlerror })
+            }
+            else {
+                res.status(204).json({ message: "User deleted!" });
+            }
+        });    
         }
-    });
+    })
+
 }
