@@ -311,8 +311,7 @@ exports.deletePost = (req, res, next) => {
 
 
 
-exports.weekly = (req,res,next) =>{
-    console.log('in')
+exports.weekly = (req, res, next) => {
     const pool = new Pool(
         {
             user: process.env.DATABASE_USERNAME,
@@ -321,13 +320,13 @@ exports.weekly = (req,res,next) =>{
             host: 'localhost',
             port: 5432
         })
-        pool.query("SELECT username,COUNT(posts.userid) from posts INNER JOIN userstable on userstable.userid=posts.userid GROUP BY username", (sqlerror, result) =>{
-            if(sqlerror){
-                res.status(500).json({error:sqlerror})
-            }
-            else{
-                res.status(200).json(result.rows)
-            }
-        })
-    
+    pool.query("SELECT username,COUNT(posts.userid) from posts INNER JOIN userstable on userstable.userid=posts.userid GROUP BY username ORDER BY count DESC", (sqlerror, result) => {
+        if (sqlerror) {
+            res.status(500).json({ error: sqlerror })
+        }
+        else {
+            res.status(200).json(result.rows)
+        }
+    })
+
 }

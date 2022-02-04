@@ -9,7 +9,7 @@ import Paper from '@mui/material/Paper';
 import Container from '@mui/material/Container'
 import { ReactiveCard } from '../elements/Card';
 import { topContributors } from '../elements/FetchCalls';
-import {useNavigate} from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 function createData(contributor, posts) {
     return { contributor, posts };
@@ -17,21 +17,26 @@ function createData(contributor, posts) {
 
 function Home(props) {
     const navigate = useNavigate();
-    const [rows,setRows] = React.useState([{"":"","":""}]);
-    topContributors(props.auth.token).then((res)=>{
-        let tempArray = new Array();
-        res.map((item)=>{
-            tempArray.push({[item.username]:item.count});
+    const [rows, setRows] = React.useState([{ "": "", "": "" }]);
+    let tempArray = new Array();
+    React.useEffect(() => {
+        topContributors(props.auth.token).then((res) => {
+            let tempArray = new Array();
+            res.map((item) => {
+                tempArray.push({ "contributor": item.username, "posts": item.count });
+            })
+            setRows(tempArray)
 
-        })
-        console.log(tempArray)
 
-    }
-    ).catch((res)=>{
-        window.confirm((res));
-        navigate('/');
-        localStorage.clear(); 
-    });
+        }
+        ).catch((res) => {
+            window.confirm((res));
+            navigate('/');
+            localStorage.clear();
+        });
+
+    }, [])
+
     return (
 
         <Container disableGutters maxWidth="sm" sx={{
@@ -65,13 +70,7 @@ function Home(props) {
                     </TableBody>
                 </Table>
             </TableContainer>
-            <h1>Most recent post:</h1>
-            <ReactiveCard
-                title={"Reactive Title"}
-                content={"Reactive content"}
-                author={"Reactive Author"}
-                authorMessage={"Reactive Author message"}
-            />
+
 
         </Container >);
 }

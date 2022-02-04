@@ -56,7 +56,7 @@ export default function BasicMenu(props) {
                         >
                             <MenuIcon />
                         </IconButton>
-                        <img style={logoStyle} src={logo}></img>
+                        <img style={logoStyle} src={logo} alt="Groupomania"></img>
                         <Button color="inherit" component={Link} onClick={props.logout} sx={{ display: props.auth.token == null ? 'none' : 'unset' }} to='/login'>Logout</Button>
                     </Toolbar>
                 </AppBar>

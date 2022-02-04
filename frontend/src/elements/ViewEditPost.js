@@ -14,7 +14,7 @@ import ThemeComponent from '../theme/Theme';
 import { EditPostContext, UpdatedContext } from '../elements/PostsContext';
 var ipAddress = "http://" + window.location.toString().split("://")[1].split(":")[0];
 const style = {
-    position: 'absolute',
+    position: 'fixed',
     top: '10%',
     left: '50%',
     transform: 'translateX(-50%)',

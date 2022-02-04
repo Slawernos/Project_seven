@@ -7,6 +7,8 @@ import Dashboard from './pages/DashboardNew';
 import Register from './pages/Register'
 import * as React from 'react';
 import ProfilePage from './pages/Profile';
+import About from './pages/About';
+
 var ipAddress = "http://" + window.location.toString().split("://")[1].split(":")[0];
 function App() {
   const navigate = useNavigate();
@@ -27,7 +29,7 @@ function App() {
       localStorage.setItem('token', token);
       localStorage.setItem('username', username);
       setAuth({ token, username });
-      navigate('/dashboard')
+      navigate('/home')
     }
     else {
       alert('wrong credentials')
@@ -57,6 +59,9 @@ function App() {
 
         </Route>
         <Route path='/register' element={<Register auth={auth} />} exact>
+
+        </Route>
+        <Route path='/about' element={<About auth={auth} />} exact>
 
         </Route>
       </Routes>
