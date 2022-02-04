@@ -73,3 +73,31 @@ export async function deleteUser(token) {
     }
 
 }
+
+
+export async function topContributors(token){
+    let ipAddress = "http://" + window.location.toString().split("://")[1].split(":")[0];
+    var getUrl = new URL(ipAddress + ':5050/api/posts/weekly');
+    let postRequest = new Request(getUrl, {
+        method: 'GET',
+        headers: {
+            'Authorization': token,
+        }
+    });
+    try{
+        let result = await fetch(postRequest);
+        let data = await result.text();
+        if (result.status===200){
+            return Promise.resolve(JSON.parse(data))
+        }
+        else
+            return Promise.reject("Error during request try to refresh page");
+    }
+
+    catch(err){
+        return Promise.reject(err);
+    }
+
+
+
+}

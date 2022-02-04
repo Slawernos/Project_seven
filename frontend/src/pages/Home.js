@@ -7,19 +7,31 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Container from '@mui/material/Container'
-import { BasicCard, ReactiveCard } from '../elements/Card';
+import { ReactiveCard } from '../elements/Card';
+import { topContributors } from '../elements/FetchCalls';
+import {useNavigate} from 'react-router-dom'
+
 function createData(contributor, posts) {
     return { contributor, posts };
 }
 
-const rows = [
-    createData('TestPerson1', 159),
-    createData('TestPerson2', 237),
+function Home(props) {
+    const navigate = useNavigate();
+    const [rows,setRows] = React.useState([{"":"","":""}]);
+    topContributors(props.auth.token).then((res)=>{
+        let tempArray = new Array();
+        res.map((item)=>{
+            tempArray.push({[item.username]:item.count});
 
-];
+        })
+        console.log(tempArray)
 
-
-function Home() {
+    }
+    ).catch((res)=>{
+        window.confirm((res));
+        navigate('/');
+        localStorage.clear(); 
+    });
     return (
 
         <Container disableGutters maxWidth="sm" sx={{
@@ -27,7 +39,7 @@ function Home() {
             maxWidth: '100%',
             marginBottom: '30px'
         }}>
-            <h1>Weekly activity dashboard</h1>
+            <h1>Activity dashboard</h1>
 
             <TableContainer component={Paper}>
                 <Table aria-label="simple table">
@@ -53,15 +65,14 @@ function Home() {
                     </TableBody>
                 </Table>
             </TableContainer>
-            <h1>Most liked post:</h1>
+            <h1>Most recent post:</h1>
             <ReactiveCard
                 title={"Reactive Title"}
                 content={"Reactive content"}
                 author={"Reactive Author"}
                 authorMessage={"Reactive Author message"}
             />
-            <h1>Most recent post:</h1>
-            <BasicCard />
+
         </Container >);
 }
 

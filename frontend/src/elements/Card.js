@@ -4,7 +4,6 @@ import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import { typography } from '@mui/system';
 
 
 export function BasicCard() {
@@ -48,22 +47,24 @@ export function ReactiveCard(props) {
         postDate = new Date();
     }
     return (
-        <Card sx={{ minWidth: '200px', width: '100%', marginTop: '25px' }} onClick={editPost}>
-            <CardContent>
-                <Typography variant="h8" color="text.secondary" gutterBottom>
-                    {props.title}
-                </Typography>
-                <Typography sx={{ fontSize: '12px' }} color="text.secondary">
-                    {"Posted by: " + props.author}
-                </Typography>
-                <Typography sx={{ fontSize: '12px' }} color="text.secondary">
-                    {"Posted: " + postDate.toLocaleString()}
-                    <br />
+        <Button sx={{ minWidth: '200px', width: '100%', marginTop: '25px' }} onClick={editPost}>
+            <Card sx={{width:'100%'}}>
+                <CardContent>
+                    <Typography variant="h8" color="text.secondary" gutterBottom>
+                        {props.title}
+                    </Typography>
+                    <Typography sx={{ fontSize: '12px' }} color="text.secondary">
+                        {"Posted by: " + props.author}
+                    </Typography>
+                    <Typography sx={{ fontSize: '12px' }} color="text.secondary">
+                        {"Posted: " + postDate.toLocaleString()}
+                        <br />
 
-                </Typography>
-                {props.isread ? <Typography color='primary'>Seen</Typography> : <Typography sx={{ color: 'red' }}>New!</Typography>}
-            </CardContent>
-        </Card>
+                    </Typography>
+                    {props.isread ? <Typography color='primary'>Seen</Typography> : <Typography sx={{ color: 'red' }}>New!</Typography>}
+                </CardContent>
+            </Card>
+        </Button>
     );
 }
 
