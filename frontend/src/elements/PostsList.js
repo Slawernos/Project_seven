@@ -3,7 +3,7 @@ import React, { useContext } from 'react';
 import { PostsContext } from '../elements/PostsContext';
 
 function PostsList(props) {
-    const [posts, setPosts] = useContext(PostsContext);
+    const [posts] = useContext(PostsContext);
     try {
         if (posts !== null) {
 

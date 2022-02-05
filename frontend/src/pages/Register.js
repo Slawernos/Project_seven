@@ -1,7 +1,6 @@
 import { Container, Typography } from '@mui/material/'
 import { useNavigate } from 'react-router-dom';
 import TextField from '@mui/material/TextField'
-import ThemeComponent from '../theme/Theme';
 import Button from '@mui/material/Button'
 import { useRef } from "react"
 import { Link } from 'react-router-dom';
@@ -33,44 +32,43 @@ function Register() {
 
     return (
 
-        <ThemeComponent>
-            <Container maxWidth="sm" sx={{
-                borderRadius: 1,
 
-                padding: '15px',
-                margin: 'auto',
-            }}>
-                <h3>Enter user details below to register</h3>
-                <form noValidate autoComplete="off">
-                    <Container sx={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        flexDirection: 'column'
-                    }}>
-                        <TextField label="Username" inputRef={username}
-                            variant="outlined"
-                            sx={{ color: "primary.main", margin: '15px' }}
-                        ></TextField>
-                        <TextField type="password" inputRef={password} label="Password" sx={{ color: "primary.main", margin: '15px' }}
-                            variant="outlined"
-                            color="primary"
-                        ></TextField>
+        <Container maxWidth="sm" sx={{
+            borderRadius: 1,
 
-                    </Container>
-                    <Container sx={{
-                        marginTop: '50px',
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        flexDirection: 'column'
-                    }}>
-                        <Button variant="contained" sx={{ color: "primary", margin: '15px' }} onClick={loginHandler}>Register</Button>
-                        <Typography variant='h7'>Already registered?</Typography>
-                        <Button component={Link} variant="contained" sx={{ color: "primary", margin: '15px' }} to='/login'>Back to Login</Button>
-                    </Container>
-                </form>
+            padding: '15px',
+            margin: 'auto',
+        }}>
+            <h3>Enter user details below to register</h3>
+            <form noValidate autoComplete="off">
+                <Container sx={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    flexDirection: 'column'
+                }}>
+                    <TextField label="Username" inputRef={username}
+                        variant="outlined"
+                        sx={{ color: "primary.main", margin: '15px' }}
+                    ></TextField>
+                    <TextField type="password" inputRef={password} label="Password" sx={{ color: "primary.main", margin: '15px' }}
+                        variant="outlined"
+                        color="primary"
+                    ></TextField>
 
-            </Container>
-        </ThemeComponent >
+                </Container>
+                <Container sx={{
+                    marginTop: '50px',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    flexDirection: 'column'
+                }}>
+                    <Button variant="contained" sx={{ color: "primary", margin: '15px' }} onClick={loginHandler}>Register</Button>
+                    <Typography variant='h7'>Already registered?</Typography>
+                    <Button component={Link} variant="contained" sx={{ color: "primary", margin: '15px' }} to='/login'>Back to Login</Button>
+                </Container>
+            </form>
+
+        </Container>
     );
 }
 

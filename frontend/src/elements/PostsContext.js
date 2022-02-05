@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect } from 'react'
-import { PostCall } from './FetchCalls';
+import { PostCall, RefreshPosts } from './FetchCalls';
 
 export const PostsContext = createContext();
 export const EditPostContext = createContext();
@@ -14,14 +14,24 @@ export function PostsProvider(props) {
     const [posts, setPosts] = useState();
     const [editPost, setEditPost] = useState({ "content": "", "date": "", "title": "", "img": "" });
     useEffect(() => {
-        PostCall(props.auth.token).then((result) => {
-            setPosts(result)
-        }).catch((result) => {
-            if (window.confirm(result)) {
-                window.location = '/';
-            };
+        if (posts)
+            RefreshPosts(props.auth.token, posts).then((result) => {
+                setPosts(result)
+            }).catch((result) => {
+                if (window.confirm(result)) {
+                    window.location = '/';
+                };
 
-        });
+            });
+        else
+            PostCall(props.auth.token).then((result) => {
+                setPosts(result)
+            }).catch((result) => {
+                if (window.confirm(result)) {
+                    window.location = '/';
+                };
+
+            });
 
         // setEditPost(request);
     }, [isUpdated])

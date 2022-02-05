@@ -7,23 +7,20 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Container from '@mui/material/Container'
-import { ReactiveCard } from '../elements/Card';
 import { topContributors } from '../elements/FetchCalls';
 import { useNavigate } from 'react-router-dom'
-
-function createData(contributor, posts) {
-    return { contributor, posts };
-}
+import { Button } from '@mui/material';
+import { Link } from 'react-router-dom'
+import { Box } from '@mui/system';
 
 function Home(props) {
     const navigate = useNavigate();
-    const [rows, setRows] = React.useState([{ "": "", "": "" }]);
-    let tempArray = new Array();
+    const [rows, setRows] = React.useState();
     React.useEffect(() => {
         topContributors(props.auth.token).then((res) => {
             let tempArray = new Array();
-            res.map((item) => {
-                tempArray.push({ "contributor": item.username, "posts": item.count });
+            res.map((item, index) => {
+                tempArray.push({ "contributor": item.username, "posts": item.count, key: index });
             })
             setRows(tempArray)
 
@@ -55,9 +52,9 @@ function Home(props) {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {rows.map((row) => (
+                        {rows != null ? rows.map((row) => (
                             <TableRow
-                                key={row.contributor}
+                                key={row.key}
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                             >
                                 <TableCell component="th" scope="row">
@@ -66,12 +63,13 @@ function Home(props) {
                                 <TableCell align="right">{row.posts}</TableCell>
 
                             </TableRow>
-                        ))}
+                        )) : <tr></tr>}
                     </TableBody>
                 </Table>
             </TableContainer>
-
-
+            <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: '15px' }}>
+                <Button component={Link} to='/dashboard' variant='outlined' color='secondary'>Go to Posts</Button>
+            </Box>
         </Container >);
 }
 

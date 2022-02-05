@@ -1,11 +1,9 @@
 import { Container } from '@mui/material/'
 import TextField from '@mui/material/TextField'
-import ThemeComponent from '../theme/Theme';
 import Button from '@mui/material/Button';
 import { useRef } from "react";
 import { Link } from 'react-router-dom';
 import * as React from 'react';
-import SimpleBackdrop from '../elements/Simplebackdrop';
 
 var ipAddress = "http://" + window.location.toString().split("://")[1].split(":")[0];
 
@@ -40,8 +38,7 @@ function Login(props) {
 
     return (
 
-        <ThemeComponent>
-            <SimpleBackdrop backdropHandler={backdropHandler} />
+        <div>
             <Container maxWidth="sm" sx={{
                 borderRadius: 1,
 
@@ -78,8 +75,9 @@ function Login(props) {
                 </form>
 
             </Container>
+        </div>
 
-        </ThemeComponent >
+
     );
 }
 

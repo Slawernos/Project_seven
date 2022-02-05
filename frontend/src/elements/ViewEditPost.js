@@ -10,7 +10,6 @@ import 'emoji-mart/css/emoji-mart.css'
 import classes from './image.modules.css'
 import { useRef } from 'react';
 import CloseIcon from '@mui/icons-material/Close';
-import ThemeComponent from '../theme/Theme';
 import { EditPostContext, UpdatedContext } from '../elements/PostsContext';
 var ipAddress = "http://" + window.location.toString().split("://")[1].split(":")[0];
 const style = {
@@ -30,6 +29,7 @@ export default function ViewEditPost(props) {
     const [open, setOpen] = React.useState(props.modalState);
     const [editPost, setEditPost] = useContext(EditPostContext);
     React.useEffect(() => {
+        setEditPost({ title: '', content: '', img: '' })
         setOpen(props.modalState);
     }, [props.modalState]);
     const [textFieldRef, titleFieldRef, fileRef, imageRef, disabledImageRef] = [useRef(), useRef(), useRef(), useRef(), useRef()];
@@ -116,7 +116,7 @@ export default function ViewEditPost(props) {
                 else {
                     response.text().then((answer) => {
                         setIsUpdated(isUpdated + 1);
-                        setOpen(false);
+                        props.modalHandler();
                     })
                 }
 
@@ -155,158 +155,156 @@ export default function ViewEditPost(props) {
     }, [open])
     if (editPost.userid === props.token.username) {
         return (
-            <ThemeComponent>
-                <Modal
-                    aria-labelledby="transition-modal-title"
-                    aria-describedby="transition-modal-description"
-                    open={open}
-                    disableScrollLock={true}
-                    onClose={props.modalHandler}
-                    closeAfterTransition
-                    BackdropComponent={Backdrop}
-                    BackdropProps={{
-                        timeout: 500,
-                        onClick: props.modalHandler
-                    }}
-                >
-                    <Fade in={open}>
-                        <Box sx={style}>
-                            <Button variant='outlined' onClick={props.modalHandler}
-                                sx={{
-                                    'position': 'absolute',
-                                    'right': '15px'
-                                }}>
-                                <CloseIcon />
-                            </Button>
-                            <TextField
-                                id="outlined-multiline-flexible"
-                                defaultValue={editPost.title}
-                                multiline
-                                maxRows={1}
-                                placeholder='Enter you post here!'
-                                sx={{ width: '100%', marginTop: '35px' }}
-                                inputRef={titleFieldRef}
-                                variant="standard"
-                            >
-                            </TextField>
-                            <TextField
-                                id="outlined-multiline-flexible"
-                                defaultValue={editPost.content}
-                                multiline
-                                rows={8}
-                                placeholder='Enter you post here!'
-                                sx={{ width: '100%', margin: '30px 0 30px 0' }}
-                                inputRef={textFieldRef}
-                                variant="standard"
-                            >
-                            </TextField>
 
-                            <Box sx={{
-                                display: 'flex', justifyContent: 'space-between'
+            <Modal
+                aria-labelledby="transition-modal-title"
+                aria-describedby="transition-modal-description"
+                open={open}
+                disableScrollLock={true}
+                onClose={props.modalHandler}
+                closeAfterTransition
+                BackdropComponent={Backdrop}
+                BackdropProps={{
+                    timeout: 500,
+                    onClick: props.modalHandler
+                }}
+            >
+                <Fade in={open}>
+                    <Box sx={style}>
+                        <Button variant='outlined' onClick={props.modalHandler}
+                            sx={{
+                                'position': 'absolute',
+                                'right': '15px'
                             }}>
-                                <Button color='secondary' variant='outlined' onClick={updatePost} > Update Post</Button>
-                                <Button color='error' variant='outlined' onClick={deletePost} > Delete Post</Button>
-                                <input ref={fileRef}
-                                    onClick={imageUpdater}
-                                    accept="image/*"
-                                    style={{ display: 'none' }}
-                                    id="raised-button-file"
-                                    type="file"
-                                />
-                                <label htmlFor="raised-button-file">
-                                    <Button color='secondary' variant="outlined" component="span">
-                                        Change Image
-                                    </Button>
-                                </label>
-                            </Box>
-                            {editPost.img === "" ?
-                                <Paper
-                                    variant="outlined"
-                                    sx={{ display: "flex", justifyContent: "center", marginTop: "25px", maxHeight: '200px', visibility: 'hidden' }}
-                                >
-                                    <img className='img' ref={disabledImageRef} src={editPost.img} alt="Posted image" />
-                                </Paper> :
-                                <Paper
-                                    variant="outlined"
-                                    sx={{ display: "flex", justifyContent: "center", marginTop: "25px", height: '200px' }}
-                                >
-                                    <img className='img' ref={imageRef} src={editPost.img} alt="Posted image" />
-                                </Paper>
-                            }
+                            <CloseIcon />
+                        </Button>
+                        <TextField
+                            id="outlined-multiline-flexible"
+                            defaultValue={editPost.title}
+                            multiline
+                            maxRows={1}
+                            placeholder='Enter you post here!'
+                            sx={{ width: '100%', marginTop: '35px' }}
+                            inputRef={titleFieldRef}
+                            variant="standard"
+                        >
+                        </TextField>
+                        <TextField
+                            id="outlined-multiline-flexible"
+                            defaultValue={editPost.content}
+                            multiline
+                            rows={8}
+                            placeholder='Enter you post here!'
+                            sx={{ width: '100%', margin: '30px 0 30px 0' }}
+                            inputRef={textFieldRef}
+                            variant="standard"
+                        >
+                        </TextField>
+
+                        <Box sx={{
+                            display: 'flex', justifyContent: 'space-between'
+                        }}>
+                            <Button color='secondary' variant='outlined' onClick={updatePost} > Update Post</Button>
+                            <Button color='error' variant='outlined' onClick={deletePost} > Delete Post</Button>
+                            <input ref={fileRef}
+                                onClick={imageUpdater}
+                                accept="image/*"
+                                style={{ display: 'none' }}
+                                id="raised-button-file"
+                                type="file"
+                            />
+                            <label htmlFor="raised-button-file">
+                                <Button color='secondary' variant="outlined" component="span">
+                                    Change Image
+                                </Button>
+                            </label>
                         </Box>
+                        {editPost.img === "" ?
+                            <Paper
+                                variant="outlined"
+                                sx={{ display: "flex", justifyContent: "center", marginTop: "25px", maxHeight: '200px', visibility: 'hidden' }}
+                            >
+                                <img className='img' ref={disabledImageRef} src={editPost.img} alt="Posted image" />
+                            </Paper> :
+                            <Paper
+                                variant="outlined"
+                                sx={{ display: "flex", justifyContent: "center", marginTop: "25px", height: '200px' }}
+                            >
+                                <img className='img' ref={imageRef} src={editPost.img} alt="Posted image" />
+                            </Paper>
+                        }
+                    </Box>
 
-                    </Fade>
+                </Fade>
 
-                </Modal >
-            </ThemeComponent >
+            </Modal >
+
         )
 
     }
     else {
         return (
-            <ThemeComponent>
-                <Modal
-                    aria-labelledby="transition-modal-title"
-                    aria-describedby="transition-modal-description"
-                    open={open}
-                    disableScrollLock={true}
-                    onClose={props.modalHandler}
-                    closeAfterTransition
-                    BackdropComponent={Backdrop}
-                    BackdropProps={{
-                        timeout: 500,
-                        onClick: props.modalHandler
-                    }}
-                >
-                    <Fade in={open}>
-                        <Box sx={style}>
-                            <Button variant='outlined' onClick={props.modalHandler}
-                                sx={{
-                                    'position': 'absolute',
-                                    'right': '15px'
-                                }}>
-                                <CloseIcon />
-                            </Button>
-                            <TextField disabled
-                                id="outlined-multiline-flexible"
-                                value={editPost.title}
-                                multiline
-                                maxRows={1}
-                                placeholder='Enter you post here!'
-                                sx={{ width: '100%', marginTop: '35px' }}
-                                variant="standard"
-                            >
-                            </TextField>
-                            <TextField disabled
-                                id="outlined-multiline-flexible"
-                                value={editPost.content}
-                                multiline
-                                rows={8}
-                                placeholder='Enter you post here!'
-                                sx={{ width: '100%', margin: '30px 0 30px 0' }}
-                                variant="standard"
-                            >
-                            </TextField>
-                            {editPost.img === "" ?
-                                <Paper
-                                    variant="outlined"
-                                    sx={{ display: "flex", justifyContent: "center", marginTop: "25px", maxHeight: '200px', visibility: 'hidden' }}
-                                >
-                                    <img className='img' ref={disabledImageRef} src={editPost.img} alt="Posted image" />
-                                </Paper> :
-                                <Paper
-                                    variant="outlined"
-                                    sx={{ display: "flex", justifyContent: "center", marginTop: "25px", height: '200px' }}
-                                >
-                                    <img className='img' ref={imageRef} src={editPost.img} alt="Posted image" />
-                                </Paper>
-                            }
-                        </Box>
 
-                    </Fade>
+            <Modal
+                aria-labelledby="transition-modal-title"
+                aria-describedby="transition-modal-description"
+                open={open}
+                disableScrollLock={true}
+                onClose={props.modalHandler}
+                closeAfterTransition
+                BackdropComponent={Backdrop}
+                BackdropProps={{
+                    timeout: 500,
+                    onClick: props.modalHandler
+                }}
+            >
+                <Fade in={open}>
+                    <Box sx={style}>
+                        <Button variant='outlined' onClick={props.modalHandler}
+                            sx={{
+                                'position': 'absolute',
+                                'right': '15px'
+                            }}>
+                            <CloseIcon />
+                        </Button>
+                        <TextField disabled
+                            id="outlined-multiline-flexible"
+                            value={editPost.title}
+                            multiline
+                            maxRows={1}
+                            sx={{ width: '100%', marginTop: '35px' }}
+                            variant="standard"
+                        >
+                        </TextField>
+                        <TextField disabled
+                            id="outlined-multiline-flexible"
+                            value={editPost.content}
+                            multiline
+                            rows={8}
+                            sx={{ width: '100%', margin: '30px 0 30px 0' }}
+                            variant="standard"
+                        >
+                        </TextField>
+                        {editPost.img === "" ?
+                            <Paper
+                                variant="outlined"
+                                sx={{ display: "flex", justifyContent: "center", marginTop: "25px", maxHeight: '200px', visibility: 'hidden' }}
+                            >
+                                <img className='img' ref={disabledImageRef} src={editPost.img} alt="Posted image" />
+                            </Paper> :
+                            <Paper
+                                variant="outlined"
+                                sx={{ display: "flex", justifyContent: "center", marginTop: "25px", height: '200px' }}
+                            >
+                                <img className='img' ref={imageRef} src={editPost.img} alt="Posted image" />
+                            </Paper>
+                        }
+                    </Box>
 
-                </Modal >
-            </ThemeComponent >
+                </Fade>
+
+            </Modal >
+
         )
     }
 }

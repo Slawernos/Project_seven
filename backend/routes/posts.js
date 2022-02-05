@@ -6,6 +6,7 @@ const multer = require('../middleware/multer')
 
 router.get('/', auth.auth, postsController.getAll);
 router.get('/getchunk', auth.auth, postsController.getChunk);
+router.get('/refresh', auth.auth, postsController.refreshPosts);
 router.get('/getone', auth.auth, postsController.getOne);
 router.get('/weekly', auth.auth, postsController.weekly);
 router.delete('/', auth.auth, postsController.deletePost);

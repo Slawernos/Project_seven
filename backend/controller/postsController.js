@@ -5,6 +5,36 @@ const { resourceLimits } = require('worker_threads');
 
 
 //getting top 5 posts
+
+exports.refreshPosts = (req, res, next) => {
+    const pool = new Pool(
+        {
+            user: process.env.DATABASE_USERNAME,
+            password: process.env.DATABASE_PASSWORD,
+            database: process.env.DATABASE_DATABASE,
+            host: 'localhost',
+            port: 5432
+        })
+    pool.query("SELECT userstable.username as userid,userstable.userid as id, posts.postid, content, date, title,isread FROM posts INNER JOIN userstable on posts.userid=userstable.userid LEFT JOIN (SELECT isread,postid FROM isreadtable  WHERE userid=$1) as ala  on ala.postid=posts.postid WHERE posts.postid<=$2 ORDER BY date DESC LIMIT 5", [req.authenticated.userid, req.query.postid], (sqlerror, result) => {
+
+        if (sqlerror) {
+            res.status(500).json({ error: sqlerror })
+        }
+        else {
+            try {
+                res.status(200).json(result.rows)
+
+            }
+
+            catch (err) {
+                res.status(500).json({ error: err.message })
+            }
+        }
+
+    })
+
+
+}
 exports.getAll = async (req, res, next) => {
 
     const pool = new Pool(
@@ -228,16 +258,18 @@ exports.updatePost = (req, res, next) => {
                 if (sqlerror) {
                     res.status(500).json({ error: sqlerror })
                 } else {
-                    let oldFileName = result.rows[0].img;
+                    var oldFileName = result.rows[0].img;
                     pool.query(query, variables, (sqlerror, result) => {
                         if (sqlerror) {
                             res.status(500).json({ error: sqlerror })
-                        } else {
+                        } else if (oldFileName != "") {
                             fs.unlinkSync('./images/' + oldFileName)
                             res.status(201).json({ message: req.body })
 
 
                         }
+                        else
+                            res.status(201).json({ message: req.body })
                     });
 
 

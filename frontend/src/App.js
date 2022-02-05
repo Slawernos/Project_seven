@@ -7,12 +7,8 @@ import Dashboard from './pages/DashboardNew';
 import Register from './pages/Register'
 import * as React from 'react';
 import ProfilePage from './pages/Profile';
-<<<<<<< Updated upstream
 import About from './pages/About';
-
-var ipAddress = "http://" + window.location.toString().split("://")[1].split(":")[0];
-=======
->>>>>>> Stashed changes
+import ThemeComponent from '../src/theme/Theme'
 function App() {
   const navigate = useNavigate();
   var tempauth = { token: null, username: null }
@@ -45,29 +41,31 @@ function App() {
   }
   return (
     <Layout logout={logout} auth={auth}>
-      <Routes>
-        <Route path='/' element={<Login login={login} auth={auth} />} exact>
+      <ThemeComponent>
+        <Routes>
+          <Route path='/' element={<Login login={login} auth={auth} />} exact>
 
-        </Route>
-        <Route path='/home' element={<Home login={login} auth={auth} />} exact>
+          </Route>
+          <Route path='/home' element={<Home login={login} auth={auth} />} exact>
 
-        </Route>
-        <Route path='/profile' element={<ProfilePage auth={auth} />} exact>
+          </Route>
+          <Route path='/profile' element={<ProfilePage auth={auth} />} exact>
 
-        </Route>
-        <Route path='/login' element={<Login login={login} auth={auth} />} exact>
+          </Route>
+          <Route path='/login' element={<Login login={login} auth={auth} />} exact>
 
-        </Route>
-        <Route path='/dashboard' element={<Dashboard auth={auth} />} exact>
+          </Route>
+          <Route path='/dashboard' element={<Dashboard auth={auth} />} exact>
 
-        </Route>
-        <Route path='/register' element={<Register auth={auth} />} exact>
+          </Route>
+          <Route path='/register' element={<Register auth={auth} />} exact>
 
-        </Route>
-        <Route path='/about' element={<About auth={auth} />} exact>
+          </Route>
+          <Route path='/about' element={<About auth={auth} />} exact>
 
-        </Route>
-      </Routes>
+          </Route>
+        </Routes>
+      </ThemeComponent>
       {/* <button onClick={getAuth}>AuthCheck</button> */}
     </Layout>
   );

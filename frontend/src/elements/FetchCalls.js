@@ -1,4 +1,33 @@
 
+export async function RefreshPosts(token, posts) {
+    if (posts[0] != undefined) {
+        let ipAddress = "http://" + window.location.toString().split("://")[1].split(":")[0];
+        var getUrl = new URL(ipAddress + ':5050/api/posts/refresh');
+        getUrl.searchParams.append('postid', posts[0].postid);
+        let postRequest = new Request(getUrl, {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+            }
+        });
+        try {
+            let result = await fetch(postRequest);
+            let data = await result.text();
+            return Promise.resolve(JSON.parse(data))
+        }
+        catch (err) {
+            return Promise.rejetct("error during loading data please refresh page")
+        }
+    }
+    else {
+        this.PostsCall(token);
+    }
+
+
+
+
+
+}
 
 
 export async function PostCall(token, isNext, posts) {
@@ -6,11 +35,10 @@ export async function PostCall(token, isNext, posts) {
     let ipAddress = "http://" + window.location.toString().split("://")[1].split(":")[0];
     var getUrl = new URL(ipAddress + ':5050/api/posts/');
     try {
-        if (posts != undefined) {
+        if (posts !== undefined) {
             getUrl.href += "getchunk"
 
             if (isNext) {
-                console.log(posts)
                 if (posts.length === 5) {
                     getUrl.searchParams.append('next', true);
                     getUrl.searchParams.append('id', posts[posts.length - 1].date);
@@ -20,9 +48,8 @@ export async function PostCall(token, isNext, posts) {
                 }
 
             }
-            else {
+            else if (!isNext) {
                 getUrl.searchParams.append('id', posts[0].date);
-                console.log(posts)
                 getUrl.searchParams.append('next', false);
             }
 
@@ -75,7 +102,7 @@ export async function deleteUser(token) {
 }
 
 
-export async function topContributors(token){
+export async function topContributors(token) {
     let ipAddress = "http://" + window.location.toString().split("://")[1].split(":")[0];
     var getUrl = new URL(ipAddress + ':5050/api/posts/weekly');
     let postRequest = new Request(getUrl, {
@@ -84,17 +111,17 @@ export async function topContributors(token){
             'Authorization': token,
         }
     });
-    try{
+    try {
         let result = await fetch(postRequest);
         let data = await result.text();
-        if (result.status===200){
+        if (result.status === 200) {
             return Promise.resolve(JSON.parse(data))
         }
         else
             return Promise.reject("Error during request try to refresh page");
     }
 
-    catch(err){
+    catch (err) {
         return Promise.reject(err);
     }
 
