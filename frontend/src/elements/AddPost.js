@@ -9,7 +9,7 @@ import { Button } from '@mui/material';
 import { useRef } from 'react';
 import { Paper } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import { UpdatedContext } from './PostsContext';
+import { PostsContext, UpdatedContext } from './PostsContext';
 var ipAddress = "http://" + window.location.toString().split("://")[1].split(":")[0];
 
 const style = {
@@ -26,7 +26,8 @@ const style = {
 
 export default function AddPost(props) {
     const [open, setOpen] = useState(props.modalState);
-    const [isUpdated, setIsUpdated] = useContext(UpdatedContext);
+    const [, setIsUpdated] = useContext(UpdatedContext);
+    const [, setPosts] = useContext(PostsContext)
     React.useEffect(() => {
         setOpen(props.modalState);
     }, [props.modalState]);
@@ -66,7 +67,10 @@ export default function AddPost(props) {
 
             fetch(postRequest).then((response) => {
                 response.text().then((answer) => {
-                    setIsUpdated(isUpdated + 1);
+                    setPosts(() => {
+                        setIsUpdated(false);
+                        return null;
+                    });
                     props.modalHandler()
 
                 })
@@ -165,7 +169,7 @@ export default function AddPost(props) {
                             variant="outlined"
                             sx={{ display: "flex", justifyContent: "center", marginTop: "25px", maxHeight: '200px', visibility: 'hidden' }}
                         >
-                            <img className='img' ref={imageRef} alt="Posted image" />
+                            <img className='img' ref={imageRef} alt="Posted by me" />
                         </Paper>
                     </Box>
 

@@ -1,6 +1,6 @@
 
 export async function RefreshPosts(token, posts) {
-    if (posts[0] != undefined) {
+    if (posts[0] !== undefined) {
         let ipAddress = "http://" + window.location.toString().split("://")[1].split(":")[0];
         var getUrl = new URL(ipAddress + ':5050/api/posts/refresh');
         getUrl.searchParams.append('postid', posts[0].postid);

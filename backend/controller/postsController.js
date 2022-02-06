@@ -263,7 +263,12 @@ exports.updatePost = (req, res, next) => {
                         if (sqlerror) {
                             res.status(500).json({ error: sqlerror })
                         } else if (oldFileName != "") {
-                            fs.unlinkSync('./images/' + oldFileName)
+                            try {
+                                fs.unlinkSync('./images/' + oldFileName)
+                            }
+                            catch (err) {
+
+                            }
                             res.status(201).json({ message: req.body })
 
 
@@ -320,7 +325,12 @@ exports.deletePost = (req, res, next) => {
                         res.status(500).json({ error: sqlerror })
                     } else {
                         if (fileName !== '') {
-                            fs.unlinkSync('./images/' + fileName)
+                            try {
+                                fs.unlinkSync('./images/' + fileName)
+                            }
+                            catch (err) {
+
+                            }
                         }
                         res.status(201).json({ message: 'DELETED' })
 

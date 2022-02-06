@@ -7,7 +7,6 @@ import { Paper } from '@mui/material';
 import TextField from '@mui/material/TextField';
 import { Button } from '@mui/material';
 import 'emoji-mart/css/emoji-mart.css'
-import classes from './image.modules.css'
 import { useRef } from 'react';
 import CloseIcon from '@mui/icons-material/Close';
 import { EditPostContext, UpdatedContext } from '../elements/PostsContext';
@@ -25,13 +24,13 @@ const style = {
 };
 
 export default function ViewEditPost(props) {
-    const [isUpdated, setIsUpdated] = useContext(UpdatedContext);
+    const [, setIsUpdated] = useContext(UpdatedContext);
     const [open, setOpen] = React.useState(props.modalState);
     const [editPost, setEditPost] = useContext(EditPostContext);
     React.useEffect(() => {
         setEditPost({ title: '', content: '', img: '' })
         setOpen(props.modalState);
-    }, [props.modalState]);
+    }, [props.modalState, setEditPost]);
     const [textFieldRef, titleFieldRef, fileRef, imageRef, disabledImageRef] = [useRef(), useRef(), useRef(), useRef(), useRef()];
 
 
@@ -51,7 +50,7 @@ export default function ViewEditPost(props) {
                 if (answer.status === 401)
                     window.location = '/'
                 else {
-                    setIsUpdated(isUpdated + 1);
+                    setIsUpdated(false);
                     props.modalHandler();
                 }
             })
@@ -115,7 +114,7 @@ export default function ViewEditPost(props) {
                     window.location = '/'
                 else {
                     response.text().then((answer) => {
-                        setIsUpdated(isUpdated + 1);
+                        setIsUpdated(false);
                         props.modalHandler();
                     })
                 }
@@ -150,9 +149,9 @@ export default function ViewEditPost(props) {
             });
         }
         else {
-            setIsUpdated(isUpdated + 1);
+            setIsUpdated(false);
         }
-    }, [open])
+    }, [open, props.editPost.id, setEditPost, setIsUpdated, props.token.token])
     if (editPost.userid === props.token.username) {
         return (
 
@@ -224,13 +223,13 @@ export default function ViewEditPost(props) {
                                 variant="outlined"
                                 sx={{ display: "flex", justifyContent: "center", marginTop: "25px", maxHeight: '200px', visibility: 'hidden' }}
                             >
-                                <img className='img' ref={disabledImageRef} src={editPost.img} alt="Posted image" />
+                                <img className='img' ref={disabledImageRef} src={editPost.img} alt={"Posted by" + editPost.author} />
                             </Paper> :
                             <Paper
                                 variant="outlined"
                                 sx={{ display: "flex", justifyContent: "center", marginTop: "25px", height: '200px' }}
                             >
-                                <img className='img' ref={imageRef} src={editPost.img} alt="Posted image" />
+                                <img className='img' ref={imageRef} src={editPost.img} alt={"Posted by" + editPost.author} />
                             </Paper>
                         }
                     </Box>
@@ -290,13 +289,13 @@ export default function ViewEditPost(props) {
                                 variant="outlined"
                                 sx={{ display: "flex", justifyContent: "center", marginTop: "25px", maxHeight: '200px', visibility: 'hidden' }}
                             >
-                                <img className='img' ref={disabledImageRef} src={editPost.img} alt="Posted image" />
+                                <img className='img' ref={disabledImageRef} src={editPost.img} alt={"Posted by" + editPost.author} />
                             </Paper> :
                             <Paper
                                 variant="outlined"
                                 sx={{ display: "flex", justifyContent: "center", marginTop: "25px", height: '200px' }}
                             >
-                                <img className='img' ref={imageRef} src={editPost.img} alt="Posted image" />
+                                <img className='img' ref={imageRef} src={editPost.img} alt={"Posted by" + editPost.author} />
                             </Paper>
                         }
                     </Box>

@@ -18,8 +18,8 @@ function Home(props) {
     const [rows, setRows] = React.useState();
     React.useEffect(() => {
         topContributors(props.auth.token).then((res) => {
-            let tempArray = new Array();
-            res.map((item, index) => {
+            let tempArray = [];
+            res.forEach((item, index) => {
                 tempArray.push({ "contributor": item.username, "posts": item.count, key: index });
             })
             setRows(tempArray)
@@ -32,7 +32,7 @@ function Home(props) {
             localStorage.clear();
         });
 
-    }, [])
+    }, [props.auth.token, navigate])
 
     return (
 

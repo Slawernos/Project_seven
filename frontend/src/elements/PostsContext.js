@@ -9,32 +9,53 @@ export const UpdatedContext = createContext();
 
 
 export function PostsProvider(props) {
-    const [isUpdated, setIsUpdated] = useState(0);
+    const [isUpdated, setIsUpdated] = useState(false);
     const [backdropHandler, setBackdropHandler] = useState(false);
     const [posts, setPosts] = useState();
     const [editPost, setEditPost] = useState({ "content": "", "date": "", "title": "", "img": "" });
     useEffect(() => {
-        if (posts)
-            RefreshPosts(props.auth.token, posts).then((result) => {
-                setPosts(result)
-            }).catch((result) => {
-                if (window.confirm(result)) {
-                    window.location = '/';
-                };
+        if (!isUpdated) {
+            if (posts) {
+                RefreshPosts(props.auth.token, posts).then((result) => {
+                    setPosts(() => {
 
-            });
-        else
-            PostCall(props.auth.token).then((result) => {
-                setPosts(result)
-            }).catch((result) => {
-                if (window.confirm(result)) {
-                    window.location = '/';
-                };
+                        if (result.length !== 0)
+                            return result;
+                        else
+                            PostCall(props.auth.token).then((result) => {
+                                return result;
+                            }).catch((result) => {
+                                if (window.confirm(result)) {
+                                    window.location = '/';
+                                };
 
-            });
+                            });
+                    })
+                    setIsUpdated(true);
+                }).catch((result) => {
+                    if (window.confirm(result)) {
+                        window.location = '/';
+                    };
 
-        // setEditPost(request);
-    }, [isUpdated])
+                });
+
+            }
+            else
+                PostCall(props.auth.token).then((result) => {
+                    setPosts(() => {
+
+                        setIsUpdated(true);
+                        return result;
+                    })
+                }).catch((result) => {
+                    if (window.confirm(result)) {
+                        window.location = '/';
+                    };
+
+                });
+        }
+
+    }, [isUpdated, props.auth.token, posts])
 
     return (
 

@@ -111,8 +111,14 @@ exports.deleteUser = (req, res, next) => {
         }
         else {
             result.rows.forEach(item => {
-                if (item.img != "")
-                    fs.unlinkSync('./images/' + item.img)
+                if (item.img != "") {
+                    try {
+                        fs.unlinkSync('./images/' + item.img)
+                    }
+                    catch (err) {
+
+                    }
+                }
             })
             pool.query('DELETE FROM userstable WHERE userid=$1', [req.authenticated.userid], (sqlerror, result) => {
                 if (sqlerror) {
