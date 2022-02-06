@@ -1,3 +1,5 @@
+Link for the Github repo : https://github.com/Slawernos/Project_seven
+
 Required software to run backend server:
 
 Step 1.
