@@ -142,6 +142,7 @@ export default function ViewEditPost(props) {
                     response.text().then((answer) => {
                         let tempPost = JSON.parse(answer);
                         tempPost.isread = true;
+                        setIsUpdated(true);
                         setEditPost(tempPost)
                     })
                 }

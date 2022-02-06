@@ -19,8 +19,11 @@ export function PostsProvider(props) {
                 RefreshPosts(props.auth.token, posts).then((result) => {
                     setPosts(() => {
 
-                        if (result.length !== 0)
+                        if (result.length !== 0) {
+
+                            setIsUpdated(true);
                             return result;
+                        }
                         else
                             PostCall(props.auth.token).then((result) => {
                                 return result;
@@ -31,7 +34,6 @@ export function PostsProvider(props) {
 
                             });
                     })
-                    setIsUpdated(true);
                 }).catch((result) => {
                     if (window.confirm(result)) {
                         window.location = '/';
